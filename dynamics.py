@@ -1,4 +1,6 @@
 import sympy as sp
+from sympy import *
+from simupy import *
 
 t = sp.symbols("t")
 
@@ -39,6 +41,57 @@ Term_q2 = sp.diff(dL_dq2,t) - dL_q2
 sol = sp.solve((Term_x,Term_q1,Term_q2),sp.Derivative(x, (t, 2)),
                 sp.Derivative(q1, (t, 2)),sp.Derivative(q2, (t, 2)))
 
+key_list = []
+for key in sol.keys():
+    key_list.append(key)
+
+
+
+f_1 = dx
+f_2 = dq1
+f_3 = dq2
+f_4 = dx
+f_5 = dq1
+f_6 = dq2
+
+# x = q1 = q2 = dq1 = dq2 = dx = F = 0
+
+Xdot = Matrix([[dx],[dq1],[dq2],[sol[key_list[0]]],[sol[key_list[1]]],[sol[key_list[2]]]])
+X = Matrix([[x],[q1],[q2],[dx],[dq1],[dq2]])
+F_mat = Matrix([[F]])
+
+
+
+
+JF = Xdot.jacobian(F_mat)
+JX = Xdot.jacobian(X)
+
+JX_subs = N(JX.subs([(x,0),(q1,0),(q2,0),(dx,0),(dq1,0),(dq2,0),(F,0)]))
+N(JX_subs)
+JF_subs = N(JF.subs([(x,0),(q1,0),(q2,0),(dx,0),(dq1,0),(dq2,0),(F,0)]))
+N(JF_subs)
+
+# JX.subs(x,0)
+# JX.subs(q1,0)
+# JX.subs(q2,0)
+# JX.subs(dx,0)
+# JX.subs(dq1,0)
+# JX.subs(dq2,0)
+# JX.subs(F,0)
+C = JF_subs
+blah = JF_subs
+for i in range(5):
+    blah = JX_subs*blah
+    C = C.row_join(blah) 
+    
+
+# print(XJ.shape)
 #print(sp.Derivative(q1, (t, 2)))
 #print(sol)
 #print(sp.latex(sp.simplify(Term_x)))
+# C = N(C.subs([(M,1000),(m1,100),(m2,100),(l1,20),(l2,10),(g,10)]))
+# N(C)
+# jac = sol.jacobian()
+# print(jac)
+# C.det()
+C = N(C.subs([(M,10),(m1,10),(m2,1),(l1,2),(l2,1),(g,10)]))
