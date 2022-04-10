@@ -1,40 +1,19 @@
 import sympy as sp
+import numpy as np
 
-# problem 6
-p11,p12,p21,p22 = sp.symbols("p11 p12 p21 p22")
+m1,m2,M,l1,l2,g = sp.symbols("m1 m2 M l1 l2 g")
 
-P = sp.Matrix([[p11,p12],[p21,p22]])
-A = sp.Matrix([[-3,2],[-1,-1]])
-Q = sp.eye(2)
+A = sp.Matrix([[0,1,0,0,0,0],[0,0,-m1*g/M,0,-m2*g/M,0],
+            [0,0,0,1,0,0],[0,0,-(M+m1)*g/(M*l1),0,-m2*g/(M*l1),0],
+            [0,0,0,0,0,1],[0,0,-m1*g/(M*l1),0,-(M+m2)*g/(M*l2),0]])
 
-L = A.T * P + P * A
-print(L)
+B = sp.Matrix([[0],[1/M],[0],[1/(M*l1)],[0],[1/(M*l2)]])
 
-eq1 = sp.Eq(L[0,0] + 1,0)
-eq2 = sp.Eq(L[0,1],0)
-eq3 = sp.Eq(L[1,0],0)
-eq4 = sp.Eq(L[1,1] + 1,0)
+I = sp.Matrix([[1,0,0,0,0,0],[0,0,0,1,0,0],[0,1,0,0,0,0],
+             [0,0,0,0,1,0],[0,0,1,0,0,0],[0,0,0,0,0,1]])
 
-sol = sp.solve((eq1,eq2,eq3,eq4),(p11,p12,p21,p22))
-print(sol)
+A_new = I.inv() * A * I
 
-det = sol[p11]*sol[p22] - sol[p12]*sol[p21]
-print("determinant : ",det)
+B_new = I.inv() * B
 
-
-
-
-# problem 5
-S = sp.eye(3)
-#S = sp.Matrix([[0,1,1],[1,0,0],[0,1,-1]])
-A = sp.Matrix([[1,1,0],[0,1,0],[0,1,1]])
-B = sp.Matrix([[0,1],[1,0],[0,1]])
-A_hat = S.inv() * A * S
-B_hat = S.inv() * B
-print(A_hat)
-print(B_hat)
-
-# problem 4
-B = sp.Matrix([[0],[1]])
-print(B*B.T)
-
+print(B_new)
